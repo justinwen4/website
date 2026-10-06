@@ -128,29 +128,4 @@
       });
     })
     .catch(function () { /* Static content stays as-is */ });
-
-  // Latest public push in the "Right now" card
-  github('/users/' + GITHUB_USER + '/events/public?per_page=30')
-    .then(function (events) {
-      // Skip the profile README repo; it's rarely the interesting one
-      var push = events.find(function (e) {
-        return e.type === 'PushEvent' && e.repo.name !== GITHUB_USER + '/' + GITHUB_USER;
-      });
-      var line = document.querySelector('.now-live');
-      if (!push || !line) return;
-
-      var repoName = push.repo.name.split('/')[1] || push.repo.name;
-      var text = line.querySelector('.now-live-text');
-      var link = document.createElement('a');
-      link.href = 'https://github.com/' + push.repo.name;
-      link.target = '_blank';
-      link.rel = 'noopener';
-      link.textContent = repoName;
-
-      text.textContent = '';
-      text.appendChild(link);
-      text.appendChild(document.createTextNode(' · ' + timeAgo(push.created_at)));
-      line.hidden = false;
-    })
-    .catch(function () {});
 })();
